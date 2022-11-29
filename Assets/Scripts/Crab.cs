@@ -5,16 +5,20 @@ using UnityEngine;
 
 public class Crab : MonoBehaviour
 {
-    [SerializeField] private Transform _target;
+    private Transform _target;
     [SerializeField] private float _speed = 1;
     [SerializeField] private int _timerAttack;
     [SerializeField] private AudioSource _crabAudioSource;
     [SerializeField] private AudioClip _crabAttackAudio;
 
-    [SerializeField] private Animator _crabAnimator;
+    //[SerializeField] private Animator _crabAnimator;
 
     private int _timer;
     private bool _inRadiusAttack = false;
+    private void Start()
+    {
+        _target = FindObjectOfType<PlayerInput>().transform;
+    }
     private void FixedUpdate()
     {
         if (!_inRadiusAttack)

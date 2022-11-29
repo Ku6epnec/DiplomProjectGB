@@ -3333,7 +3333,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 6ed1faf62bc1dba4686f52ef07649d0f, type: 3}
-  m_PlayOnAwake: 1
+  m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
   Loop: 0
@@ -3430,11 +3430,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d000f13ef8af7b7459f661879cc43b26, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _target: {fileID: 0}
   _speed: 1.5
   _timerAttack: 200
   _crabAudioSource: {fileID: 6509096595168339605}
   _crabAttackAudio: {fileID: 8300000, guid: 6ed1faf62bc1dba4686f52ef07649d0f, type: 3}
+  _crabAnimator: {fileID: 0}
 --- !u!1 &6509096594044890979
 GameObject:
   m_ObjectHideFlags: 0
