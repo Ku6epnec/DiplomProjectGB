@@ -1,0 +1,259 @@
+{
+  "CatalogVersion": "FirstCatalog",
+  "Catalog": [
+    {
+      "ItemId": "One",
+      "ItemClass": null,
+      "CatalogVersion": "FirstCatalog",
+      "DisplayName": "My first item",
+      "Description": null,
+      "VirtualCurrencyPrices": {},
+      "RealCurrencyPrices": {},
+      "Tags": [],
+      "CustomData": null,
+      "Consumable": {
+        "UsageCount": null,
+        "UsagePeriod": null,
+        "UsagePeriodGroup": null
+      },
+      "Container": null,
+      "Bundle": null,
+      "CanBecomeCharacter": false,
+      "IsStackable": false,
+      "IsTradable": false,
+      "ItemImageUrl": null,
+      "IsLimitedEdition": false,
+      "InitialLimitedEditionCount": 0,
+      "ActivatedMembership": null
+    },
+    {
+      "ItemId": "wooden_sword_id",
+      "ItemClass": "sword",
+      "CatalogVersion": "FirstCatalog",
+      "DisplayName": "Wood sword",
+      "Description": "First sword.",
+      "VirtualCurrencyPrices": {
+        "RM": 200,
+        "SC": 100
+      },
+      "RealCurrencyPrices": {},
+      "Tags": [
+        "weapon"
+      ],
+      "CustomData": "{}",
+      "Consumable": {
+        "UsageCount": null,
+        "UsagePeriod": null,
+        "UsagePeriodGroup": null
+      },
+      "Container": null,
+      "Bundle": null,
+      "CanBecomeCharacter": true,
+      "IsStackable": true,
+      "IsTradable": false,
+      "ItemImageUrl": null,
+      "IsLimitedEdition": false,
+      "InitialLimitedEditionCount": 0,
+      "ActivatedMembership": null
+    },
+    {
+      "ItemId": "bundle_sword_id",
+      "ItemClass": "Bundle Sword",
+      "CatalogVersion": "FirstCatalog",
+      "DisplayName": "Bundle Sword",
+      "Description": null,
+      "VirtualCurrencyPrices": {},
+      "RealCurrencyPrices": null,
+      "Tags": [],
+      "CustomData": null,
+      "Consumable": {
+        "UsageCount": 1,
+        "UsagePeriod": 86400,
+        "UsagePeriodGroup": null
+      },
+      "Container": null,
+      "Bundle": {
+        "BundledItems": [
+          "wooden_sword_id",
+          "wooden_sword_id",
+          "wooden_sword_id",
+          "One"
+        ],
+        "BundledResultTables": [],
+        "BundledVirtualCurrencies": null
+      },
+      "CanBecomeCharacter": false,
+      "IsStackable": false,
+      "IsTradable": false,
+      "ItemImageUrl": null,
+      "IsLimitedEdition": false,
+      "InitialLimitedEditionCount": 0,
+      "ActivatedMembership": null
+    },
+    {
+      "ItemId": "conteiner_id",
+      "ItemClass": null,
+      "CatalogVersion": "FirstCatalog",
+      "DisplayName": null,
+      "Description": null,
+      "VirtualCurrencyPrices": {},
+      "RealCurrencyPrices": null,
+      "Tags": [],
+      "CustomData": null,
+      "Consumable": {
+        "UsageCount": 1,
+        "UsagePeriod": null,
+        "UsagePeriodGroup": null
+      },
+      "Container": {
+        "KeyItemId": "One",
+        "ItemContents": [
+          "wooden_sword_id",
+          "One"
+        ],
+        "ResultTableContents": [],
+        "VirtualCurrencyContents": null
+      },
+      "Bundle": null,
+      "CanBecomeCharacter": false,
+      "IsStackable": false,
+      "IsTradable": false,
+      "ItemImageUrl": null,
+      "IsLimitedEdition": false,
+      "InitialLimitedEditionCount": 0,
+      "ActivatedMembership": null
+    },
+    {
+      "ItemId": "laser_gun_id",
+      "ItemClass": "gun",
+      "CatalogVersion": "FirstCatalog",
+      "DisplayName": "Laser Gun",
+      "Description": null,
+      "VirtualCurrencyPrices": {},
+      "RealCurrencyPrices": {},
+      "Tags": [
+        "weapon"
+      ],
+      "CustomData": null,
+      "Consumable": {
+        "UsageCount": null,
+        "UsagePeriod": null,
+        "UsagePeriodGroup": null
+      },
+      "Container": null,
+      "Bundle": null,
+      "CanBecomeCharacter": false,
+      "IsStackable": false,
+      "IsTradable": true,
+      "ItemImageUrl": null,
+      "IsLimitedEdition": false,
+      "InitialLimitedEditionCount": 0,
+      "ActivatedMembership": null
+    },
+    {
+      "ItemId": "laser_sword_id",
+      "ItemClass": "sword",
+      "CatalogVersion": "FirstCatalog",
+      "DisplayName": "Laset Sword",
+      "Description": null,
+      "VirtualCurrencyPrices": {
+        "RM": 5000
+      },
+      "RealCurrencyPrices": {},
+      "Tags": [
+        "weapon"
+      ],
+      "CustomData": null,
+      "Consumable": {
+        "UsageCount": null,
+        "UsagePeriod": null,
+        "UsagePeriodGroup": null
+      },
+      "Container": null,
+      "Bundle": null,
+      "CanBecomeCharacter": false,
+      "IsStackable": false,
+      "IsTradable": true,
+      "ItemImageUrl": null,
+      "IsLimitedEdition": true,
+      "InitialLimitedEditionCount": 1,
+      "ActivatedMembership": null
+    },
+    {
+      "ItemId": "steel_sword_id",
+      "ItemClass": "sword",
+      "CatalogVersion": "FirstCatalog",
+      "DisplayName": "Steel Sword",
+      "Description": null,
+      "VirtualCurrencyPrices": {
+        "RM": 500,
+        "SC": 1000
+      },
+      "RealCurrencyPrices": {},
+      "Tags": [
+        "weapon"
+      ],
+      "CustomData": null,
+      "Consumable": {
+        "UsageCount": null,
+        "UsagePeriod": null,
+        "UsagePeriodGroup": null
+      },
+      "Container": null,
+      "Bundle": null,
+      "CanBecomeCharacter": false,
+      "IsStackable": false,
+      "IsTradable": true,
+      "ItemImageUrl": null,
+      "IsLimitedEdition": false,
+      "InitialLimitedEditionCount": 0,
+      "ActivatedMembership": null
+    },
+    {
+      "ItemId": "apple_id",
+      "ItemClass": "fruit",
+      "CatalogVersion": "FirstCatalog",
+      "DisplayName": "Apple Fruit",
+      "Description": null,
+      "VirtualCurrencyPrices": {
+        "SC": 2
+      },
+      "RealCurrencyPrices": {},
+      "Tags": [
+        "food"
+      ],
+      "CustomData": null,
+      "Consumable": {
+        "UsageCount": 1,
+        "UsagePeriod": 2629800,
+        "UsagePeriodGroup": null
+      },
+      "Container": null,
+      "Bundle": null,
+      "CanBecomeCharacter": false,
+      "IsStackable": true,
+      "IsTradable": false,
+      "ItemImageUrl": null,
+      "IsLimitedEdition": false,
+      "InitialLimitedEditionCount": 0,
+      "ActivatedMembership": null
+    }
+  ],
+  "DropTables": [
+    {
+      "TableId": "table_id",
+      "Nodes": [
+        {
+          "ResultItemType": "ItemId",
+          "ResultItem": "wooden_sword_id",
+          "Weight": 1
+        },
+        {
+          "ResultItemType": "ItemId",
+          "ResultItem": "One",
+          "Weight": 1
+        }
+      ]
+    }
+  ]
+}

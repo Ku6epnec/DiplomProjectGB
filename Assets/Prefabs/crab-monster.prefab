@@ -3430,11 +3430,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d000f13ef8af7b7459f661879cc43b26, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _speed: 1.5
-  _timerAttack: 200
   _crabAudioSource: {fileID: 6509096595168339605}
   _crabAttackAudio: {fileID: 8300000, guid: 6ed1faf62bc1dba4686f52ef07649d0f, type: 3}
-  _crabAnimator: {fileID: 0}
+  _crabWalkAudio: {fileID: 8300000, guid: 4bf7129b7e2fd854aa95c7d36001ab07, type: 3}
+  _speed: 1.5
+  _timerAttack: 200
 --- !u!1 &6509096594044890979
 GameObject:
   m_ObjectHideFlags: 0

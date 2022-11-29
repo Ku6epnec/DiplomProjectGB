@@ -4,13 +4,22 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {   
-    void Start()
+    public static int _health;
+    [SerializeField] private int _maxHealth = 5;
+    [SerializeField] private GameObject _loseCanvas;
+
+    private void Start()
     {
-        
+        _health = _maxHealth;
     }
-   
-    void Update()
+
+    void FixedUpdate()
     {
-        
+        if (_health < 1)
+        {
+            Debug.Log("PlayerDeath!!!");
+            _loseCanvas.SetActive(true);
+            Time.timeScale = 0;
+        }
     }
 }

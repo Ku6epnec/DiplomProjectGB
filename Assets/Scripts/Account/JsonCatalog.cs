@@ -22,12 +22,12 @@ public class JsonCatalog : MonoBehaviour
         string jsonCatalog = JsonUtility.ToJson(myCatalog);
         Debug.Log(jsonCatalog);
 
-        File.ReadAllText("Assets/title-1B50D-FirstCatalog.json");
+        File.ReadAllText("Assets/title-204F2-FirstCatalog.json");
         File.WriteAllText("Assets/MyCatalog", jsonCatalog);
 
         myCatalog = JsonUtility.FromJson<Catalog>(jsonCatalog);
         Debug.Log(myCatalog);
 
-        Debug.Log(File.ReadAllText("Assets/title-1B50D-FirstCatalog.json"));
+        Debug.Log(File.ReadAllText("Assets/title-204F2-FirstCatalog.json"));
     }
 }
