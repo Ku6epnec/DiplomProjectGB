@@ -20,7 +20,7 @@ public class Crab : MonoBehaviour
 
     private void Start()
     {
-        _target = FindObjectOfType<PlayerInput>().transform;
+        _target = FindObjectOfType<Player>().transform;
         _crabAnimator = GetComponent<Animator>();
         _crabAnimator.SetTrigger("Walk_Cycle_1");
     }
