@@ -1601,7 +1601,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 72c0751fb76ffe349a900cef5850e3ec, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.010288796
+      value: -0.09
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 72c0751fb76ffe349a900cef5850e3ec, type: 3}
       propertyPath: m_LocalPosition.z
@@ -1609,23 +1609,23 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 72c0751fb76ffe349a900cef5850e3ec, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 1
+      value: -0.7071068
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 72c0751fb76ffe349a900cef5850e3ec, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0
+      value: 0.7071068
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 72c0751fb76ffe349a900cef5850e3ec, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 72c0751fb76ffe349a900cef5850e3ec, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 72c0751fb76ffe349a900cef5850e3ec, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
+      value: 270
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 72c0751fb76ffe349a900cef5850e3ec, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
@@ -1635,6 +1635,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -7511558181221131132, guid: 72c0751fb76ffe349a900cef5850e3ec, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 51a9deab8b258c040a41991473601137, type: 2}
     - target: {fileID: 919132149155446097, guid: 72c0751fb76ffe349a900cef5850e3ec, type: 3}
       propertyPath: m_Name
       value: crab
@@ -2164,6 +2168,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 4721813657618416906, guid: 3fa723b02cb15224bbcd89be4873f179, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 74307c7081959644e9e26c0ec60a42dd, type: 2}
     - target: {fileID: 5804855589539900912, guid: 3fa723b02cb15224bbcd89be4873f179, type: 3}
       propertyPath: m_RootOrder
       value: 2
