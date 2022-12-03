@@ -25,7 +25,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     private bool _isGrounded;
     private Rigidbody _rb;
 
-
     public void Awake()
     {
         if (photonView.IsMine)
@@ -38,10 +37,11 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
     private void Start()
     {
+
         _rb = GetComponent<Rigidbody>();
         _health = _maxHealth;
 
-        if (this.playerUiPrefab != null)
+        /*if (this.playerUiPrefab != null)
         {
             GameObject _uiGo = Instantiate(this.playerUiPrefab);
             _uiGo.SendMessage("SetTarget", this, SendMessageOptions.RequireReceiver);
@@ -49,7 +49,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         else
         {
             Debug.LogWarning("<Color=Red><b>Missing</b></Color> PlayerUiPrefab reference on player Prefab.", this);
-        }
+        }*/
 
         UnityEngine.SceneManagement.SceneManager.sceneLoaded += OnSceneLoaded;
 

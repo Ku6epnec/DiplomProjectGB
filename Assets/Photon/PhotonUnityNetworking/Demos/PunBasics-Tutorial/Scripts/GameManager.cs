@@ -69,8 +69,9 @@ namespace Photon.Pun.Demo.PunBasics
 				{
 				    Debug.LogFormat("We are Instantiating LocalPlayer from {0}", SceneManagerHelper.ActiveSceneName);
 
+					InstantiateNewPlayer();
 					// we're in a room. spawn a character for the local player. it gets synced by using PhotonNetwork.Instantiate
-					PhotonNetwork.Instantiate(this.playerPrefab.name, new Vector3(0f,5f,0f), Quaternion.identity, 0);
+					//PhotonNetwork.Instantiate(this.playerPrefab.name, new Vector3(0f,5f,0f), Quaternion.identity, 0);
 				}else{
 
 					Debug.LogFormat("Ignoring scene load for {0}", SceneManagerHelper.ActiveSceneName);
@@ -108,8 +109,10 @@ namespace Photon.Pun.Demo.PunBasics
 			if ( PhotonNetwork.IsMasterClient )
 			{
 				Debug.LogFormat( "OnPlayerEnteredRoom IsMasterClient {0}", PhotonNetwork.IsMasterClient ); // called before OnPlayerLeftRoom
-	
-				LoadArena();
+
+				//InstantiateNewPlayer();
+
+				//LoadArena();
 			}
 		}
 
@@ -154,6 +157,10 @@ namespace Photon.Pun.Demo.PunBasics
 		#endregion
 
 		#region Private Methods
+		void InstantiateNewPlayer()
+        {
+			PhotonNetwork.Instantiate(this.playerPrefab.name, new Vector3(0f, 5f, 0f), Quaternion.identity, 0);
+		}
 
 		void LoadArena()
 		{
