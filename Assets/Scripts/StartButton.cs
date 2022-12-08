@@ -13,7 +13,7 @@ public class StartButton : MonoBehaviour
 
     void Start()
     {
-        _buttonStart.onClick.AddListener(StartGame);
+        //_buttonStart.onClick.AddListener(StartGame);
     }
 
     private void StartGame()

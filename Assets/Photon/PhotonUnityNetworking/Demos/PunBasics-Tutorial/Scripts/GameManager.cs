@@ -10,13 +10,11 @@
 
 using UnityEngine;
 using UnityEngine.SceneManagement;
-
 using Photon.Realtime;
 
 namespace Photon.Pun.Demo.PunBasics
 {
-	#pragma warning disable 649
-
+#pragma warning disable 649
 	/// <summary>
 	/// Game manager.
 	/// Connects and watch Photon Status, Instantiate Player
@@ -160,6 +158,7 @@ namespace Photon.Pun.Demo.PunBasics
 		void InstantiateNewPlayer()
         {
 			PhotonNetwork.Instantiate(this.playerPrefab.name, new Vector3(0f, 5f, 0f), Quaternion.identity, 0);
+			Debug.Log("playerPrefab.name: " + playerPrefab.name);
 		}
 
 		void LoadArena()

@@ -215,9 +215,15 @@ namespace Photon.Pun.Demo.PunBasics
 
 				// #Critical
 				// Load the Room Level. 
-				PhotonNetwork.LoadLevel("Game");
+				//PhotonNetwork.LoadLevel("Game");
 
 			}
+		}
+
+		public void LoadGame()
+        {
+			PhotonNetwork.LoadLevel("Game");
+			Debug.Log("We load the Game");
 		}
 
 		#endregion

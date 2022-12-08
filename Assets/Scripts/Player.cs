@@ -6,14 +6,19 @@ using UnityEngine;
 
 public class Player : MonoBehaviourPunCallbacks, IPunObservable
 {   
-    public static int _health;
+    public int _health;
     public int _maxHealth = 5;
+    public static bool _underAttack;
     [SerializeField] private GameObject _loseCanvas;
+    [SerializeField] private GameObject _winCanvas;
     [SerializeField] private GameObject _menuCanvas;
+    public string _nick;
+
+    private Animator _boyAnimator;
 
     public static GameObject LocalPlayerInstance;
 
-    [SerializeField] private GameObject playerUiPrefab;
+    //[SerializeField] private GameObject playerUiPrefab;
 
     private bool _menuState = false;
 
@@ -21,6 +26,15 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
     [SerializeField] private float Speed = 10f;
     [SerializeField] private float JumpForce = 300f;
+
+    [SerializeField] private float _timer;
+    [SerializeField] private GameObject _crabPrefab;
+
+    [SerializeField] private float _randomSpawnRange = 15;
+
+    private Transform _spawnPoint;
+
+    private float _spawnTime = 0;
 
     private bool _isGrounded;
     private Rigidbody _rb;
@@ -31,15 +45,23 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         {
             LocalPlayerInstance = gameObject;
         }
-
+        //_spawnPoint = FindObjectOfType<SpawnPoint>().transform;
         DontDestroyOnLoad(gameObject);
     }
 
     private void Start()
     {
-
+        if (photonView.IsMine)
+        {
+            name = PlayFabAccountManager._characterName;
+            _nick = name;
+        }
+        Debug.Log("Player name = " + name);
         _rb = GetComponent<Rigidbody>();
         _health = _maxHealth;
+
+        _boyAnimator = GetComponent<Animator>();
+        _boyAnimator.SetTrigger("Rest1");
 
         /*if (this.playerUiPrefab != null)
         {
@@ -61,6 +83,11 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         this.CalledOnLevelWasLoaded(scene.buildIndex);
     }
 
+    public void LoseHealth()
+    {
+        _health--;
+    }
+
     private void CalledOnLevelWasLoaded(int level)
     {
         if (!Physics.Raycast(transform.position, -Vector3.up, 5f))
@@ -68,8 +95,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             transform.position = new Vector3(0f, 5f, 0f);
         }
 
-        GameObject _uiGo = Instantiate(this.playerUiPrefab);
-        _uiGo.SendMessage("SetTarget", this, SendMessageOptions.RequireReceiver);
+        //GameObject _uiGo = Instantiate(this.playerUiPrefab);
+        //_uiGo.SendMessage("SetTarget", this, SendMessageOptions.RequireReceiver);
     }
 
     public override void OnDisable()
@@ -85,18 +112,49 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
     void FixedUpdate()
     {
+        Debug.Log("Player with ID = " + photonView.InstantiationId + " has Health = " + _health);
         if (photonView.IsMine)
         {
+            //SpawnerEnemy();
             MovementLogic();
             JumpLogic();
+            Debug.Log("IsGrounded + " + _isGrounded);
+            if (!_isGrounded)
+            {
+                _boyAnimator.SetTrigger("Jump");
+            }
             if (this._maxHealth <= 0f && !this.leavingRoom)
             {
                 this.leavingRoom = GameManager.Instance.LeaveRoom();
             }
         }
     }
+
+    private void SpawnerEnemy()
+    {
+        if (PhotonNetwork.IsMasterClient)
+        {
+            if (_spawnTime == _timer)
+            {
+                Vector3 pos = new Vector3(Random.Range(-_randomSpawnRange, _randomSpawnRange),
+                    1, Random.Range(-_randomSpawnRange, _randomSpawnRange));
+                Instantiate<GameObject>(_crabPrefab, pos, Quaternion.identity, _spawnPoint);
+                Debug.Log("Spawn Crab");
+                _spawnTime = 0;
+            }
+            else
+            {
+                _spawnTime++;
+            }
+        }
+    }
+
     void Update()
     {
+        if (!photonView.IsMine)
+        {
+            name = _nick;
+        }
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             _menuState = !_menuState;
@@ -104,9 +162,19 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         }
         if (_health < 1)
         {
-            Debug.Log("PlayerDeath!!!");
-            _loseCanvas.SetActive(true);
+            Debug.Log("PlayerDeath!!! nick: " + _nick);
+
             Time.timeScale = 0;
+
+            if (photonView.IsMine)
+            {
+                _loseCanvas.SetActive(true);
+            }
+            else
+            {
+                _winCanvas.SetActive(true);
+            }
+
         }
     }
 
@@ -117,6 +185,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         float moveVertical = Input.GetAxis("Vertical");
 
         Vector3 movement = new Vector3(moveHorizontal, 0.0f, moveVertical);
+        if (movement != null && _isGrounded) _boyAnimator.SetTrigger("Run");
 
         _rb.AddForce(movement * Speed);
     }
@@ -126,7 +195,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         if (Input.GetAxis("Jump") > 0)
         {
             if (_isGrounded)
-            {
+            {            
                 _rb.AddForce(Vector3.up * JumpForce);
             }
         }
@@ -142,6 +211,16 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         IsGroundedUpate(collision, false);
     }
 
+        public void OnTriggerStay(Collider other)
+        {
+            if (other.CompareTag("Enemy") && _underAttack)
+            {
+                this._health--;
+                _underAttack = false;
+                Debug.Log("Player is underAttack OnTriggerStay");
+            }
+    }
+
     private void IsGroundedUpate(Collision collision, bool value)
     {
         if (collision.gameObject.tag == ("Ground"))
@@ -155,10 +234,14 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         if (stream.IsWriting)
         {
             stream.SendNext(this._maxHealth);
+            stream.SendNext(_health);
+            stream.SendNext(_nick);
         }
         else
         {
             this._maxHealth = (int)stream.ReceiveNext();
+            _health = (int)stream.ReceiveNext();
+            _nick = (string)stream.ReceiveNext();
         }
     }
 }

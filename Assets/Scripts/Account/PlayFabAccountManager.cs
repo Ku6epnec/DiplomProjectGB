@@ -17,8 +17,9 @@ public class PlayFabAccountManager : MonoBehaviour
     [SerializeField] private Button _fightCharacterButton;
     //[SerializeField] TMP_InputField _inputField;
     [SerializeField] private GameObject _conteinerLayout;
+    [SerializeField] private TMP_Text _nickName;
 
-    private string _characterName;
+    public static string _characterName;
 
     private int _endTimer = 100;
     private bool _timerStatus = true;
@@ -28,6 +29,7 @@ public class PlayFabAccountManager : MonoBehaviour
 
     private void Start()
     {
+        DontDestroyOnLoad(gameObject);
         //LoadingTimer();
         PlayFabClientAPI.GetAccountInfo(new GetAccountInfoRequest(), OnGetAccountSuccess, OnError);
         PlayFabClientAPI.GetCatalogItems(new GetCatalogItemsRequest(), OnGetCatalogSuccess, OnError);
@@ -102,6 +104,8 @@ public class PlayFabAccountManager : MonoBehaviour
     private void Update()
     {
         //LoadingTimer();
+        //string aba = PlayFabClientAPI.UpdateUserTitleDisplayName();
+        //string name = result.InfoResultPayload.PlayerProfile.DisplayName;
     }
 
     private void ChangeAccount()
@@ -113,6 +117,8 @@ public class PlayFabAccountManager : MonoBehaviour
     {
         var accountInfo = result.AccountInfo;
         _titleLabel.text = "Welcome " + accountInfo.Username + "\n" + accountInfo.PlayFabId;
+        _nickName.text = accountInfo.Username;
+        _characterName = accountInfo.Username;
         _sliderLoadingProcess.value = _endTimer; 
         _timerStatus = false;
         _imageEndLoading.color = Color.magenta;

@@ -10,7 +10,8 @@ public class PlayFabLogin : MonoBehaviour
     private const string AuthGuidKey = "auth_guid";
 
     [SerializeField] private TMP_InputField Result;
-        
+    [SerializeField] private GameObject NickName;
+
     public void TryToLogin()
     {
         if (string.IsNullOrEmpty(PlayFabSettings.staticSettings.TitleId))
@@ -40,6 +41,7 @@ public class PlayFabLogin : MonoBehaviour
         Result.text = "Your connection Success";
 
         SetUserData(result.PlayFabId);
+        //NickName.name = result.InfoResultPayload.PlayerProfile.DisplayName;
         MakePurchase();
     }
 
