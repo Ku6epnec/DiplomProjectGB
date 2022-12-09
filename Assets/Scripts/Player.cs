@@ -3,6 +3,9 @@ using Photon.Pun.Demo.PunBasics;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using PlayFab;
+using PlayFab.ClientModels;
+using System.Linq;
 
 public class Player : MonoBehaviourPunCallbacks, IPunObservable
 {   
@@ -39,10 +42,65 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     private bool _isGrounded;
     private Rigidbody _rb;
 
+    private ItemInstance _jumpersInstance;
+
+    private float _jumpersCooldown = 200.0f;
+    private float _jumpersTime = 200.0f;
+
+    private void GetInventory()
+    {
+        PlayFabClientAPI.GetUserInventory(new GetUserInventoryRequest(), result => OnGetInventorySuccess(result.Inventory), OnError);
+    }
+
+    private void OnGetInventorySuccess(List<ItemInstance> item)
+    {
+        _jumpersInstance = item.First();
+    }
+
+    public void GruntVirtualCurrency()
+    {
+        var request = new AddUserVirtualCurrencyRequest
+        {
+            VirtualCurrency = "GC",
+            Amount = 30
+        };
+        PlayFabClientAPI.AddUserVirtualCurrency(request, OnGrantVirtualCurrencySuccess, OnError);
+    }
+
+    void UseJumpers()
+    {
+        PlayFabClientAPI.ConsumeItem(new ConsumeItemRequest
+        {
+            ConsumeCount = 1,
+            ItemInstanceId = _jumpersInstance.ItemInstanceId
+        }, OnUseJumpersSuccess, OnUseJumpersError);
+    }
+
+    private void OnUseJumpersSuccess(ConsumeItemResult obj)
+    {
+        Debug.Log("Use 1 Jumper!");
+        _rb.AddForce(Vector3.up * JumpForce);
+    }
+
+    private void OnUseJumpersError(PlayFabError obj)
+    {
+        Debug.Log("Error use Jumpers: " + obj);      
+    }
+    private void OnError(PlayFabError obj)
+    {
+        Debug.Log("Error Grunt Currency!");
+    }
+
+    private void OnGrantVirtualCurrencySuccess(ModifyUserVirtualCurrencyResult obj)
+    {
+        Debug.Log("Currency Grunted!");
+    }
+
     public void Awake()
     {
         if (photonView.IsMine)
         {
+            GetInventory();
             LocalPlayerInstance = gameObject;
         }
         //_spawnPoint = FindObjectOfType<SpawnPoint>().transform;
@@ -107,18 +165,18 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
     public override void OnLeftRoom()
     {
-        this.leavingRoom = false;
+        leavingRoom = false;
     }
 
     void FixedUpdate()
     {
-        Debug.Log("Player with ID = " + photonView.InstantiationId + " has Health = " + _health);
         if (photonView.IsMine)
         {
+            if (_jumpersTime < _jumpersCooldown) _jumpersTime++;
             //SpawnerEnemy();
             MovementLogic();
+            if (_jumpersTime >= _jumpersCooldown)
             JumpLogic();
-            Debug.Log("IsGrounded + " + _isGrounded);
             if (!_isGrounded)
             {
                 _boyAnimator.SetTrigger("Jump");
@@ -129,6 +187,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             }
         }
     }
+
 
     private void SpawnerEnemy()
     {
@@ -160,11 +219,13 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             _menuState = !_menuState;
             _menuCanvas.SetActive(_menuState);
         }
-        if (_health < 1)
+        if (_health == 0)
         {
             Debug.Log("PlayerDeath!!! nick: " + _nick);
 
             Time.timeScale = 0;
+
+            _health--;
 
             if (photonView.IsMine)
             {
@@ -172,6 +233,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             }
             else
             {
+                GruntVirtualCurrency();
                 _winCanvas.SetActive(true);
             }
 
@@ -191,12 +253,13 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     }
 
     private void JumpLogic()
-    {
+    {   
         if (Input.GetAxis("Jump") > 0)
         {
             if (_isGrounded)
-            {            
-                _rb.AddForce(Vector3.up * JumpForce);
+            {
+                _jumpersTime = 0;
+                UseJumpers();
             }
         }
     }
@@ -218,7 +281,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 this._health--;
                 _underAttack = false;
                 Debug.Log("Player is underAttack OnTriggerStay");
-            }
+                Debug.Log("Player with ID = " + photonView.InstantiationId + " has Health = " + _health);
+        }
     }
 
     private void IsGroundedUpate(Collision collision, bool value)
