@@ -8,15 +8,19 @@ using PlayFab.ClientModels;
 using System.Linq;
 
 public class Player : MonoBehaviourPunCallbacks, IPunObservable
-{   
-    private int _health;
+{
+    public Transform _healthPanel;
+    public int _health;
     public int _maxHealth = 5;
     public static bool _underAttack;
+    [SerializeField] private GameObject _healthPoint;
+
     [SerializeField] private GameObject _loseCanvas;
     [SerializeField] private GameObject _winCanvas;
     [SerializeField] private GameObject _menuCanvas;
     public string _nick;
 
+    public List<GameObject> HealthBar = new List<GameObject>();
     //private Animator _boyAnimator;
     //public Animator _playerAnimator;
     private Animator _playerAnimator;
@@ -31,6 +35,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
     [SerializeField] private float Speed = 10f;
     [SerializeField] private float JumpForce = 300f;
+    [SerializeField] private AudioClip _jumpAudio;
 
     [SerializeField] private float _maxSpawnTime = 200f;
     [SerializeField] private float _maxSpawnTimeSmall = 100f;
@@ -41,6 +46,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
     [SerializeField] private float _randomSpawnRange = 15;
 
+    private AudioSource _audio;
     private bool _spawnSmallCrab = false;
 
     private Transform _spawnPoint;
@@ -87,6 +93,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
     private void OnUseJumpersSuccess(ConsumeItemResult obj)
     {
+        _audio.PlayOneShot(_jumpAudio);
         Debug.Log("Use 1 Jumper!");
         _rb.AddForce(Vector3.up * JumpForce);
     }
@@ -107,6 +114,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
     public void Awake()
     {
+        _audio = GetComponent<AudioSource>();
         if (photonView.IsMine)
         {
             GetInventory();
@@ -118,16 +126,22 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
     private void Start()
     {
+        _health = _maxHealth;
         if (photonView.IsMine)
         {
             _playerAnimator = GetComponent<Animator>();
             name = PlayFabAccountManager._characterName;
             _nick = name;
+            //_healthPanel = FindObjectOfType<HealthPanel>().transform;
+            //HealthBar = new List<GameObject>(_maxHealth);
+            for (int i = 0; i < HealthBar.Count; i++)
+            {
+                Debug.Log("Add Health Point");
+                //HealthBar[i] = Instantiate(_healthPoint, _healthPanel);
+            }
         }
         Debug.Log("Player name = " + name);
         _rb = GetComponent<Rigidbody>();
-        _health = _maxHealth;
-
         //_boyAnimator = GetComponent<Animator>();
        // _boyAnimator.SetTrigger("Rest1");
 
@@ -324,18 +338,28 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         IsGroundedUpate(collision, false);
     }
 
-        public void OnTriggerStay(Collider other)
+    public void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Trampoline"))
         {
-            /*if (photonView.IsMine)
-            {
-                return;
-            }*/
-            if (other.CompareTag("Enemy") && _underAttack)
-            {
-                this._health--;
-                _underAttack = false;
-                Debug.Log("Player is underAttack OnTriggerStay");
-                Debug.Log("Player with Nick " + photonView.name + " has Health = " + _health);
+            _audio.PlayOneShot(_jumpAudio);
+            _rb.AddForce(Vector3.up * JumpForce);
+        }
+    }
+
+    public void OnTriggerStay(Collider other)
+    {
+        /*if (photonView.IsMine)
+        {
+            return;
+        }*/
+        if (other.CompareTag("Enemy") && _underAttack)
+        {
+            this._health--;
+            _underAttack = false;
+            HealthBar[_health].SetActive(false);
+            Debug.Log("Player is underAttack OnTriggerStay");
+            Debug.Log("Player with Nick " + photonView.name + " has Health = " + _health);
         }
     }
 
