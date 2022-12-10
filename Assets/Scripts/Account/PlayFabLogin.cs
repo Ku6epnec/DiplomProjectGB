@@ -10,7 +10,7 @@ public class PlayFabLogin : MonoBehaviour
     private const string AuthGuidKey = "auth_guid";
 
     [SerializeField] private TMP_InputField Result;
-    [SerializeField] private GameObject NickName;
+    //[SerializeField] private GameObject NickName;
 
     public void TryToLogin()
     {
