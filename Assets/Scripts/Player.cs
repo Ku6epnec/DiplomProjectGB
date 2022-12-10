@@ -9,7 +9,7 @@ using System.Linq;
 
 public class Player : MonoBehaviourPunCallbacks, IPunObservable
 {   
-    public int _health;
+    private int _health;
     public int _maxHealth = 5;
     public static bool _underAttack;
     [SerializeField] private GameObject _loseCanvas;
@@ -17,7 +17,9 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     [SerializeField] private GameObject _menuCanvas;
     public string _nick;
 
-    private Animator _boyAnimator;
+    //private Animator _boyAnimator;
+    //public Animator _playerAnimator;
+    private Animator _playerAnimator;
 
     public static GameObject LocalPlayerInstance;
 
@@ -47,6 +49,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     private float _jumpersCooldown = 200.0f;
     private float _jumpersTime = 200.0f;
 
+    public List<GameObject> Enemies = new List<GameObject>();
     private void GetInventory()
     {
         PlayFabClientAPI.GetUserInventory(new GetUserInventoryRequest(), result => OnGetInventorySuccess(result.Inventory), OnError);
@@ -103,7 +106,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             GetInventory();
             LocalPlayerInstance = gameObject;
         }
-        //_spawnPoint = FindObjectOfType<SpawnPoint>().transform;
+        _spawnPoint = FindObjectOfType<SpawnPoint>().transform;
         DontDestroyOnLoad(gameObject);
     }
 
@@ -111,6 +114,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     {
         if (photonView.IsMine)
         {
+            _playerAnimator = GetComponent<Animator>();
             name = PlayFabAccountManager._characterName;
             _nick = name;
         }
@@ -118,8 +122,8 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         _rb = GetComponent<Rigidbody>();
         _health = _maxHealth;
 
-        _boyAnimator = GetComponent<Animator>();
-        _boyAnimator.SetTrigger("Rest1");
+        //_boyAnimator = GetComponent<Animator>();
+       // _boyAnimator.SetTrigger("Rest1");
 
         /*if (this.playerUiPrefab != null)
         {
@@ -172,34 +176,39 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     {
         if (photonView.IsMine)
         {
+            
             if (_jumpersTime < _jumpersCooldown) _jumpersTime++;
             //SpawnerEnemy();
             MovementLogic();
             if (_jumpersTime >= _jumpersCooldown)
             JumpLogic();
-            if (!_isGrounded)
+            /*if (!_isGrounded)
             {
                 _boyAnimator.SetTrigger("Jump");
-            }
+            }*/
             if (this._maxHealth <= 0f && !this.leavingRoom)
             {
                 this.leavingRoom = GameManager.Instance.LeaveRoom();
             }
         }
+        SpawnerEnemy();
     }
 
 
     private void SpawnerEnemy()
     {
-        if (PhotonNetwork.IsMasterClient)
+        //if (PhotonNetwork.IsMasterClient)
         {
-            if (_spawnTime == _timer)
+            if (_spawnTime >= _timer)
             {
                 Vector3 pos = new Vector3(Random.Range(-_randomSpawnRange, _randomSpawnRange),
                     1, Random.Range(-_randomSpawnRange, _randomSpawnRange));
-                Instantiate<GameObject>(_crabPrefab, pos, Quaternion.identity, _spawnPoint);
+                var CrabEnemy = Instantiate<GameObject>(_crabPrefab, pos, Quaternion.identity, _spawnPoint);
+                Enemies.Add(CrabEnemy);
+                //Crab._target = transform;
                 Debug.Log("Spawn Crab");
                 _spawnTime = 0;
+                _spawnTime = Random.Range(0.0f, 5.0f);
             }
             else
             {
@@ -210,6 +219,18 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
     void Update()
     {
+        if (photonView.IsMine)
+        {
+            if (!_isGrounded)
+            {
+                _playerAnimator.SetBool("Jumping", true);
+            }
+            else
+            {
+                _playerAnimator.SetBool("Jumping", false);
+            }
+        }
+
         if (!photonView.IsMine)
         {
             name = _nick;
@@ -246,8 +267,11 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
         float moveVertical = Input.GetAxis("Vertical");
 
+        _playerAnimator.SetFloat("HorizontalMove", Mathf.Abs(moveHorizontal));
+        //Debug.Log("Horizontal speed = " + Mathf.Abs(moveHorizontal));
+
         Vector3 movement = new Vector3(moveHorizontal, 0.0f, moveVertical);
-        if (movement != null && _isGrounded) _boyAnimator.SetTrigger("Run");
+        //if (movement != null && _isGrounded) _boyAnimator.SetTrigger("Run");
 
         _rb.AddForce(movement * Speed);
     }
@@ -276,12 +300,16 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
         public void OnTriggerStay(Collider other)
         {
+            /*if (photonView.IsMine)
+            {
+                return;
+            }*/
             if (other.CompareTag("Enemy") && _underAttack)
             {
                 this._health--;
                 _underAttack = false;
                 Debug.Log("Player is underAttack OnTriggerStay");
-                Debug.Log("Player with ID = " + photonView.InstantiationId + " has Health = " + _health);
+                Debug.Log("Player with Nick " + photonView.name + " has Health = " + _health);
         }
     }
 
@@ -300,12 +328,22 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             stream.SendNext(this._maxHealth);
             stream.SendNext(_health);
             stream.SendNext(_nick);
+            Debug.Log("Stream is Writing   Nick " + _nick + " has " + _health + " health!");
+            /*for (int i = 0; i < Enemies.Count; i++)
+            {
+                stream.SendNext(Enemies[i].transform.position);
+            }   */
         }
         else
         {
             this._maxHealth = (int)stream.ReceiveNext();
             _health = (int)stream.ReceiveNext();
             _nick = (string)stream.ReceiveNext();
+            Debug.Log("ReceiveNext   Nick " + _nick + " has " + _health + " health!");
+            /*for (int i = 0; i < Enemies.Count; i++)
+            {
+                Enemies[i].transform.position = (Vector3)stream.ReceiveNext();
+            }*/
         }
     }
 }

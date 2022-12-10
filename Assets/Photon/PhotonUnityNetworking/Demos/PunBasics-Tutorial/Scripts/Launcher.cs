@@ -41,6 +41,7 @@ namespace Photon.Pun.Demo.PunBasics
 		[SerializeField]
 		private LoaderAnime loaderAnime;
 
+		[SerializeField] private GameObject _startButton;
 		#endregion
 
 		#region Private Fields
@@ -207,7 +208,10 @@ namespace Photon.Pun.Demo.PunBasics
 		{
 			LogFeedback("<Color=Green>OnJoinedRoom</Color> with "+PhotonNetwork.CurrentRoom.PlayerCount+" Player(s)");
 			Debug.Log("PUN Basics Tutorial/Launcher: OnJoinedRoom() called by PUN. Now this client is in a room.\nFrom here on, your game would be running.");
-		
+			if (PhotonNetwork.IsMasterClient)
+			{
+				_startButton.SetActive(true);
+			}
 			// #Critical: We only load if we are the first player, else we rely on  PhotonNetwork.AutomaticallySyncScene to sync our instance scene.
 			if (PhotonNetwork.CurrentRoom.PlayerCount == 1)
 			{

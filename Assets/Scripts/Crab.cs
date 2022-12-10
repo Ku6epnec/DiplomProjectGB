@@ -7,6 +7,7 @@ using Photon.Realtime;
 
 public class Crab : MonoBehaviourPunCallbacks, IPunObservable
 {
+    //public static GameObject _target;
     [SerializeField] private AudioSource _crabAudioSource;
     [SerializeField] private AudioClip _crabAttackAudio;
     [SerializeField] private AudioClip _crabWalkAudio;
@@ -16,15 +17,30 @@ public class Crab : MonoBehaviourPunCallbacks, IPunObservable
 
     private PhotonView _view;
     private Transform _target;
+    private List<Player> Targets = new List<Player>();
     private Animator _crabAnimator;
 
     private int _timer;
     private bool _inRadiusAttack = false;
 
+    private int _playerCounter;
+
     private void Start()
     {
         _view = GetComponent<PhotonView>();
-        _target = FindObjectOfType<Player>().transform;
+        //_target = FindObjectOfType<Player>().transform;
+        foreach (Player target in Resources.FindObjectsOfTypeAll(typeof(Player)) as Player[])
+        {
+            Targets.Add(target);
+            if (target.name == "character")
+            {
+                Targets.Remove(target);
+            }
+
+            Debug.Log("Нашёл игрока: " + target.name);
+        }
+        _playerCounter = UnityEngine.Random.Range(0, Targets.Count);
+        _target = Targets[_playerCounter].transform;
         _crabAnimator = GetComponent<Animator>();
         _crabAnimator.SetTrigger("Walk_Cycle_1");
     }
@@ -90,10 +106,12 @@ public class Crab : MonoBehaviourPunCallbacks, IPunObservable
         if (stream.IsWriting)
         {
             stream.SendNext(transform.position);
+            stream.SendNext(transform.rotation);
         }
         else
         {
             transform.position = (Vector3)stream.ReceiveNext();
+            transform.rotation = (Quaternion)stream.ReceiveNext();
         }
     }
 }
