@@ -5,6 +5,7 @@ using PlayFab;
 using PlayFab.ClientModels;
 using UnityEngine.UI;
 using System.Collections.Generic;
+using System.Linq;
 
 public class PlayFabAccountManager : MonoBehaviour
 {
@@ -18,6 +19,8 @@ public class PlayFabAccountManager : MonoBehaviour
 
     [SerializeField] private TMP_Text _goldCurrency;
 
+    [SerializeField] private TMP_Text _totalUsesJumpers;
+
     public static string _characterName;
 
     private int _endTimer = 100;
@@ -26,7 +29,7 @@ public class PlayFabAccountManager : MonoBehaviour
     private int _minXP = 5;
     private int _maxXP = 200;
 
-    public int _coinsPrice;
+    public int _extraCoinsPrice;
     public string _itemName;
 
     private void Start()
@@ -36,12 +39,13 @@ public class PlayFabAccountManager : MonoBehaviour
         PlayFabClientAPI.GetAccountInfo(new GetAccountInfoRequest(), OnGetAccountSuccess, OnError);
         
         GetVirtualCurrency();
+        GetInventory();
 
         PlayFabClientAPI.AddUserVirtualCurrency(new AddUserVirtualCurrencyRequest(), OnGetUserSuccess, OnError);
         PlayFabClientAPI.SubtractUserVirtualCurrency(new SubtractUserVirtualCurrencyRequest(), OnGetUserSuccess, OnError);
         //_fightCharacterButton.onClick.AddListener(StartFightCharacter);
         //_inputField.onValueChanged.AddListener(OnNameChange);
-         
+        
     }
 
     void MakePurchase()
@@ -84,12 +88,23 @@ public class PlayFabAccountManager : MonoBehaviour
         var request = new SubtractUserVirtualCurrencyRequest
         {
             VirtualCurrency = "GC",
-            Amount = _coinsPrice
+            Amount = _extraCoinsPrice
         };
         PlayFabClientAPI.SubtractUserVirtualCurrency(request, OnSubtractCoinsSuccess, OnError);
         MakePurchase();
+        GetInventory();
         //PlayFabClientAPI.PurchaseItem(new PurchaseItemRequest(), OnPurchaseItemSuccess, OnError);
         //PlayFabClientAPI.GetCatalogItems(new GetCatalogItemsRequest(), OnGetCatalogSuccess, OnError);
+    }
+
+    private void GetInventory()
+    {
+        PlayFabClientAPI.GetUserInventory(new GetUserInventoryRequest(), result => OnGetInventorySuccess(result.Inventory), OnError);
+    }
+
+    private void OnGetInventorySuccess(List<ItemInstance> item)
+    {
+        _totalUsesJumpers.text = item.First().RemainingUses + " charges";
     }
 
     private void OnSubtractCoinsSuccess(ModifyUserVirtualCurrencyResult obj)

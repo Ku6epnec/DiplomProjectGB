@@ -173,6 +173,11 @@ namespace Photon.Pun.Demo.PunBasics
 			PhotonNetwork.LoadLevel("PunBasics-Room for "+PhotonNetwork.CurrentRoom.PlayerCount);
 		}
 
+		public void LoadHub()
+		{
+			PhotonNetwork.LoadLevel("Hub");
+		}
+
 		#endregion
 
 	}

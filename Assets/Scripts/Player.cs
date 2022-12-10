@@ -32,10 +32,16 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     [SerializeField] private float Speed = 10f;
     [SerializeField] private float JumpForce = 300f;
 
-    [SerializeField] private float _timer;
+    [SerializeField] private float _maxSpawnTime = 200f;
+    [SerializeField] private float _maxSpawnTimeSmall = 100f;
+    [SerializeField] private float _maxSpawnBeginTime = 80f;
+
     [SerializeField] private GameObject _crabPrefab;
+    [SerializeField] private GameObject _crabPrefabSmall;
 
     [SerializeField] private float _randomSpawnRange = 15;
+
+    private bool _spawnSmallCrab = false;
 
     private Transform _spawnPoint;
 
@@ -65,7 +71,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         var request = new AddUserVirtualCurrencyRequest
         {
             VirtualCurrency = "GC",
-            Amount = 30
+            Amount = 100
         };
         PlayFabClientAPI.AddUserVirtualCurrency(request, OnGrantVirtualCurrencySuccess, OnError);
     }
@@ -178,7 +184,6 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         {
             
             if (_jumpersTime < _jumpersCooldown) _jumpersTime++;
-            //SpawnerEnemy();
             MovementLogic();
             if (_jumpersTime >= _jumpersCooldown)
             JumpLogic();
@@ -196,6 +201,27 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
 
 
     private void SpawnerEnemy()
+    {
+        if (_spawnTime >= _maxSpawnTime)
+        {
+            Vector3 pos = new Vector3(Random.Range(-_randomSpawnRange, _randomSpawnRange),
+                1, Random.Range(-_randomSpawnRange, _randomSpawnRange));
+            Instantiate<GameObject>(_crabPrefab, pos, Quaternion.identity, _spawnPoint);
+            Debug.Log("Spawn Crab");
+            _spawnTime = Random.Range(0.0f, _maxSpawnBeginTime);
+            _spawnSmallCrab = false;
+        }
+        else if ((_spawnTime >= _maxSpawnTimeSmall) && (!_spawnSmallCrab))
+        {
+            Vector3 pos = new Vector3(Random.Range(-_randomSpawnRange, _randomSpawnRange),
+                1, Random.Range(-_randomSpawnRange, _randomSpawnRange));
+            Instantiate<GameObject>(_crabPrefabSmall, pos, Quaternion.identity, _spawnPoint);
+            Debug.Log("Spawn small Crab");
+            _spawnSmallCrab = true;
+        }
+         _spawnTime++;       
+    }
+    /*private void SpawnerEnemy()
     {
         //if (PhotonNetwork.IsMasterClient)
         {
@@ -215,7 +241,7 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 _spawnTime++;
             }
         }
-    }
+    }*/
 
     void Update()
     {
