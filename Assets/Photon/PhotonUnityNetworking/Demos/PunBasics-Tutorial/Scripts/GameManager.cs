@@ -38,21 +38,21 @@ namespace Photon.Pun.Demo.PunBasics
         [SerializeField]
         private GameObject playerPrefab;
 
-        #endregion
+		#endregion
 
-        #region MonoBehaviour CallBacks
+		#region MonoBehaviour CallBacks
 
-        /// <summary>
-        /// MonoBehaviour method called on GameObject by Unity during initialization phase.
-        /// </summary>
-        void Start()
+		/// <summary>
+		/// MonoBehaviour method called on GameObject by Unity during initialization phase.
+		/// </summary>
+		void Start()
 		{
 			Instance = this;
 
 			// in case we started this demo with the wrong scene being active, simply load the menu scene
 			if (!PhotonNetwork.IsConnected)
 			{
-				SceneManager.LoadScene("PunBasics-Launcher");
+				SceneManager.LoadScene("Hub");
 
 				return;
 			}
@@ -135,7 +135,7 @@ namespace Photon.Pun.Demo.PunBasics
 		/// </summary>
 		public override void OnLeftRoom()
 		{
-			SceneManager.LoadScene("PunBasics-Launcher");
+			SceneManager.LoadScene("Hub");
 		}
 
 		#endregion
@@ -144,6 +144,7 @@ namespace Photon.Pun.Demo.PunBasics
 
 		public bool LeaveRoom()
 		{
+			SceneManager.LoadScene("hub");
 			return PhotonNetwork.LeaveRoom();
 		}
 

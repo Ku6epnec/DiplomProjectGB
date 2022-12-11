@@ -62,6 +62,9 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
     private float _jumpersTime = 200.0f;
 
     public List<GameObject> Enemies = new List<GameObject>();
+
+    [SerializeField] private AudioClip _audioButton;
+
     private void GetInventory()
     {
         PlayFabClientAPI.GetUserInventory(new GetUserInventoryRequest(), result => OnGetInventorySuccess(result.Inventory), OnError);
@@ -134,10 +137,17 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             _nick = name;
             //_healthPanel = FindObjectOfType<HealthPanel>().transform;
             //HealthBar = new List<GameObject>(_maxHealth);
-            for (int i = 0; i < HealthBar.Count; i++)
+            for (int i = 0; i < _maxHealth - 1; i++)
             {
                 Debug.Log("Add Health Point");
                 //HealthBar[i] = Instantiate(_healthPoint, _healthPanel);
+            }
+        }
+        if (!photonView.IsMine)
+        {
+            for (int i = 0; i < _maxHealth - 1; i++)
+            {
+                HealthBar[i].SetActive(false);
             }
         }
         Debug.Log("Player name = " + name);
@@ -205,10 +215,10 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
             {
                 _boyAnimator.SetTrigger("Jump");
             }*/
-            if (this._maxHealth <= 0f && !this.leavingRoom)
+            /*if (this._maxHealth <= 0f && !this.leavingRoom)
             {
                 this.leavingRoom = GameManager.Instance.LeaveRoom();
-            }
+            }*/
         }
         SpawnerEnemy();
     }
@@ -371,6 +381,14 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
         }
     }
 
+    public void LoadHub()
+    {
+        //PhotonNetwork.LeaveRoom();
+        //PhotonNetwork.LoadLevel("Hub");
+        this.leavingRoom = GameManager.Instance.LeaveRoom();
+        //GameManager.Instance.LeaveRoom();
+    }
+
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
         if (stream.IsWriting)
@@ -395,5 +413,14 @@ public class Player : MonoBehaviourPunCallbacks, IPunObservable
                 Enemies[i].transform.position = (Vector3)stream.ReceiveNext();
             }*/
         }
+    }
+
+    public void ExitGame()
+    {
+        Application.Quit();
+    }
+    public void SoundButton()
+    {
+        _audio.PlayOneShot(_audioButton);
     }
 }

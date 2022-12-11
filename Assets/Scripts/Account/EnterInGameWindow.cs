@@ -10,8 +10,14 @@ public class EnterInGameWindow : MonoBehaviour
     [SerializeField] private Canvas _createAccountCanvas;
     [SerializeField] private Canvas _signInCanvas;
 
+    [SerializeField] private AudioClip _audioButton;
+
+    private AudioSource _audio;
+
+
     private void Start()
     {
+        _audio = GetComponent<AudioSource>();
         _signInButton.onClick.AddListener(OpenSignInWindow);
         _createAccountButton.onClick.AddListener(OpenCreateAccountWindow);
     }
@@ -34,4 +40,8 @@ public class EnterInGameWindow : MonoBehaviour
         _enterInGameCanvas.enabled = false;
     }
 
+    public void SoundButton()
+    {
+        _audio.PlayOneShot(_audioButton);
+    }
 }

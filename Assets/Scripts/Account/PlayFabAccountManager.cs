@@ -25,6 +25,7 @@ public class PlayFabAccountManager : MonoBehaviour
 
     private int _endTimer = 100;
     private bool _timerStatus = true;
+    private int _gold;
 
     private int _minXP = 5;
     private int _maxXP = 200;
@@ -85,16 +86,23 @@ public class PlayFabAccountManager : MonoBehaviour
 
     public void BuyItem()
     {
-        var request = new SubtractUserVirtualCurrencyRequest
+        if (_gold >= (_extraCoinsPrice + 20))
         {
-            VirtualCurrency = "GC",
-            Amount = _extraCoinsPrice
-        };
-        PlayFabClientAPI.SubtractUserVirtualCurrency(request, OnSubtractCoinsSuccess, OnError);
-        MakePurchase();
-        GetInventory();
-        //PlayFabClientAPI.PurchaseItem(new PurchaseItemRequest(), OnPurchaseItemSuccess, OnError);
-        //PlayFabClientAPI.GetCatalogItems(new GetCatalogItemsRequest(), OnGetCatalogSuccess, OnError);
+            var request = new SubtractUserVirtualCurrencyRequest
+            {
+                VirtualCurrency = "GC",
+                Amount = _extraCoinsPrice
+            };
+            PlayFabClientAPI.SubtractUserVirtualCurrency(request, OnSubtractCoinsSuccess, OnError);
+            MakePurchase();
+            GetInventory();
+            //PlayFabClientAPI.PurchaseItem(new PurchaseItemRequest(), OnPurchaseItemSuccess, OnError);
+            //PlayFabClientAPI.GetCatalogItems(new GetCatalogItemsRequest(), OnGetCatalogSuccess, OnError);
+        }
+        else
+        {
+            Debug.Log("You have no golds for jumper!");
+        }
     }
 
     private void GetInventory()
@@ -120,9 +128,9 @@ public class PlayFabAccountManager : MonoBehaviour
 
     private void OnGetUserInventorySuccess(GetUserInventoryResult result)
     {
-        int Gold = result.VirtualCurrency["GC"];
-        Debug.Log("Gold Currency: " + Gold);
-        _goldCurrency.text = "You have " + Gold + " gold"; 
+        _gold = result.VirtualCurrency["GC"];
+        Debug.Log("Gold Currency: " + _gold);
+        _goldCurrency.text = "You have " + _gold + " gold"; 
     }
 
     private void OnGetUserSuccess(ModifyUserVirtualCurrencyResult obj)

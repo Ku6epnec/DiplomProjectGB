@@ -31,6 +31,10 @@ namespace Photon.Pun.Demo.PunBasics
 		[SerializeField] private GameObject _startButton;
 		#endregion
 
+		[SerializeField] private AudioClip _audioButton;
+
+		private AudioSource _audio;
+
 		#region Private Fields
 		bool isConnecting;
 
@@ -42,13 +46,24 @@ namespace Photon.Pun.Demo.PunBasics
 
 		void Awake()
 		{
+			_audio = GetComponent<AudioSource>();
 			if (loaderAnime==null)
 			{
 				Debug.LogError("<Color=Red><b>Missing</b></Color> loaderAnime Reference.",this);
 			}
-			
+
+			//GameManager.Instance.LeaveRoom();
+			//Disonnect();
 			PhotonNetwork.AutomaticallySyncScene = true;
 
+			//PhotonNetwork.JoinLobby();
+
+			if (PhotonNetwork.IsMasterClient) Debug.Log("IsMasterClient");
+			Debug.Log("Статус клиента: " + PhotonNetwork.NetworkClientState);	
+
+			PhotonNetwork.AutomaticallySyncScene = true;
+
+			PhotonNetwork.JoinLobby();
 		}
 
 		#endregion
@@ -58,6 +73,8 @@ namespace Photon.Pun.Demo.PunBasics
 
 		public void Connect()
 		{
+			Debug.Log("Статус клиента: " + PhotonNetwork.NetworkClientState);
+
 			feedbackText.text = "";
 
 			isConnecting = true;
@@ -69,14 +86,17 @@ namespace Photon.Pun.Demo.PunBasics
 				loaderAnime.StartLoaderAnimation();
 			}
 
+			
 			if (PhotonNetwork.IsConnected)
 			{
 				LogFeedback("Joining Room...");
+				Debug.Log("Joining Room...");
 				PhotonNetwork.JoinRandomRoom();
 			}else{
 
 				LogFeedback("Connecting...");
-				
+				Debug.Log("Connecting...");
+
 				PhotonNetwork.ConnectUsingSettings();
                 PhotonNetwork.GameVersion = this.gameVersion;
 			}
@@ -99,7 +119,7 @@ namespace Photon.Pun.Demo.PunBasics
         #region MonoBehaviourPunCallbacks CallBacks
         public override void OnConnectedToMaster()
 		{
-            // we don't want to do anything if we are not attempting to join a room. 
+			// we don't want to do anything if we are not attempting to join a room. 
 			// this case where isConnecting is false is typically when you lost or quit the game, when this level is loaded, OnConnectedToMaster will be called, in that case
 			// we don't want to do anything.
 			if (isConnecting)
@@ -109,6 +129,11 @@ namespace Photon.Pun.Demo.PunBasics
 		
 				// #Critical: The first we try to do is to join a potential existing room. If there is, good, else, we'll be called back with OnJoinRandomFailed()
 				PhotonNetwork.JoinRandomRoom();
+			}
+			else
+            {
+				Debug.Log("Complete OnConnectedToMaster!!!");
+				PhotonNetwork.JoinLobby();
 			}
 		}
 
@@ -120,6 +145,20 @@ namespace Photon.Pun.Demo.PunBasics
 			PhotonNetwork.CreateRoom(null, new RoomOptions { MaxPlayers = this.maxPlayersPerRoom});
 		}
 
+		public void Disonnect()
+		{
+			if (PhotonNetwork.IsConnected)
+			{
+				PhotonNetwork.Disconnect();
+				Debug.Log("Connect to room is " + PhotonNetwork.InRoom);
+				Debug.Log("Connect to lobby is " + PhotonNetwork.InLobby);
+				Debug.Log("Connection has status " + PhotonNetwork.NetworkClientState);
+			}
+			else
+			{
+				Debug.Log("You are have not active connect");
+			}
+		}
 
 		public override void OnDisconnected(DisconnectCause cause)
 		{
@@ -130,7 +169,6 @@ namespace Photon.Pun.Demo.PunBasics
 
 			isConnecting = false;
 			controlPanel.SetActive(true);
-
 		}
 
 		public override void OnJoinedRoom()
@@ -153,7 +191,11 @@ namespace Photon.Pun.Demo.PunBasics
 			Debug.Log("We load the Game");
 		}
 
+		public void SoundButton()
+		{
+			_audio.PlayOneShot(_audioButton);
+		}
 		#endregion
-		
+
 	}
 }
